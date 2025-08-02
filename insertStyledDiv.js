@@ -206,7 +206,7 @@
         imgH.src = chrome.runtime.getURL(`special_resources/special_resource_${typeNum}.png`);
         imgH.title = r.bonusText;
         headerRow.appendChild(imgH);
-        headerRow.appendChild(document.createTextNode(r.bonusText));
+        headerRow.appendChild(document.createTextNode(`${r.name}: ${r.bonusText}`));
         bottom.appendChild(headerRow);
 
         // Filter and sort locations by distance ascending
