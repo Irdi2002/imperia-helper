@@ -1,0 +1,28 @@
+{
+  "manifest_version": 3,
+  "name": "Imperia Online Spy Helper",
+  "version": "1.0",
+  "permissions": ["activeTab"],
+  "content_scripts": [
+    {
+      "matches": [
+        "*://*.imperiaonline.org/*",
+        "*://*.imperiaonline.com/*"
+      ],
+      "js": [
+        "content.js",
+        "insertStyledDiv.js"
+      ],
+      "run_at": "document_end"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["special_resources/*.png", "special_resources.json"],
+      "matches": [
+        "*://*.imperiaonline.org/*",
+        "*://*.imperiaonline.com/*"
+      ]
+    }
+  ]
+}
