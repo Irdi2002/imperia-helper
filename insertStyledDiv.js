@@ -103,6 +103,12 @@
       return extract(a.bonusText) - extract(b.bonusText);
     });
 
+    const { selectedTypes = [], maxDistance = '' } =
+      await chrome.storage.local.get({
+        selectedTypes: [],
+        maxDistance: ''
+      });
+
     const win = document.createElement('div');
     win.id = 'imperiaSpyWindow';
     Object.assign(win.style, {
@@ -124,6 +130,7 @@
     const distInput = document.createElement('input');
     distInput.type = 'number'; distInput.min = '0';
     distInput.addEventListener('input', updateResults);
+    distInput.value = maxDistance;
     distLabel.appendChild(distInput);
     distWrap.appendChild(distLabel);
     top.appendChild(distWrap);
@@ -139,6 +146,7 @@
       const nm = pm ? pm[1] + '%' : ((r.bonusText.match(/(-?\d+)/)||[])[1] || '');
       const pct = document.createElement('div'); pct.className = 'percentLabel'; pct.textContent = nm;
       const cb = document.createElement('input'); cb.type = 'checkbox'; cb.dataset.type = typeNum;
+      cb.checked = selectedTypes.includes(typeNum);
       cb.addEventListener('change', updateResults);
       item.appendChild(icon);
       item.appendChild(pct);
@@ -160,8 +168,20 @@
 
     document.body.appendChild(win);
     makeDraggable(win, hdr);
+    updateResults();
+
+    function saveSettings() {
+      const selected = Array.from(
+        resBox.querySelectorAll('input[type="checkbox"]:checked')
+      ).map(cb => parseInt(cb.dataset.type, 10));
+      chrome.storage.local.set({
+        selectedTypes: selected,
+        maxDistance: distInput.value
+      });
+    }
 
     function updateResults() {
+      saveSettings();
       const maxD = parseInt(distInput.value, 10);
       bottom.innerHTML = '';
       let firstGroup = true;
