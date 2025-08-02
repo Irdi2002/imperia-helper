@@ -434,20 +434,18 @@
             
             // Add click handler that navigates to coordinates
             row.addEventListener('click', () => {
-                chrome.runtime.sendMessage(
-                    {
+                chrome.runtime
+                    .sendMessage({
                         action: 'navigateToCoordinates',
                         x: parseInt(l.X, 10),
                         y: parseInt(l.Y, 10)
-                    },
-                    () => {
-                        if (chrome.runtime.lastError) {
-                            console.error('Imperia Spy message error:', chrome.runtime.lastError);
-                        } else {
-                            console.log('Imperia Spy navigating to', l.X, l.Y);
-                        }
-                    }
-                );
+                    })
+                    .then(() => {
+                        console.log('Imperia Spy navigating to', l.X, l.Y);
+                    })
+                    .catch(err => {
+                        console.error('Imperia Spy message error:', err);
+                    });
             });
 
             const iconR = document.createElement('img');
