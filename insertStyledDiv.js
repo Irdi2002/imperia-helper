@@ -434,23 +434,18 @@
             
             // Add click handler that navigates to coordinates
             row.addEventListener('click', () => {
-                // Create a script element to run in page context
-                const script = document.createElement('script');
-                script.textContent = `
-                    try {
-                        // Navigate to coordinates
-                        picassio.map.sc.goTo(${parseInt(l.X)}, ${parseInt(l.Y)});
-                        
-                        // Switch to global map
-                        if (typeof xajax_switchVillageToGlobalMap === 'function') {
-                            xajax_switchVillageToGlobalMap();
-                        }
-                    } catch (e) {
-                        console.error('Imperia Spy navigation error:', e);
-                    }
-                `;
-                document.body.appendChild(script);
-                setTimeout(() => script.remove(), 100);
+                chrome.runtime
+                    .sendMessage({
+                        action: 'navigateToCoordinates',
+                        x: parseInt(l.X, 10),
+                        y: parseInt(l.Y, 10)
+                    })
+                    .then(() => {
+                        console.log('Imperia Spy navigating to', l.X, l.Y);
+                    })
+                    .catch(err => {
+                        console.error('Imperia Spy message error:', err);
+                    });
             });
 
             const iconR = document.createElement('img');
